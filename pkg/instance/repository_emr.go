@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	registerRepository("QCE/TXMR_HBASE", NewEmrTcInstanceRepository)
+	registerRepository("QCE/TXMR_HBASE", NewEmrHBaseInstanceRepository)
 }
 
 type EmrTcInstanceRepository struct {
@@ -93,7 +93,7 @@ getMoreInstances:
 	return
 }
 
-func NewEmrTcInstanceRepository(cred common.CredentialIface, c *config.TencentConfig, logger log.Logger) (repo TcInstanceRepository, err error) {
+func NewEmrHBaseInstanceRepository(cred common.CredentialIface, c *config.TencentConfig, logger log.Logger) (repo TcInstanceRepository, err error) {
 	cli, err := client.NewEmrClient(cred, c)
 	if err != nil {
 		return
