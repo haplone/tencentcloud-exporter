@@ -14,20 +14,20 @@ import (
 )
 
 func init() {
-	registerRepository("QCE/TXMR_HBASE", NewEmrHBaseInstanceRepository)
+	registerRepository("QCE/TXMR_HDFS", NewEmrHdfsInstanceRepository)
 }
 
-type EmrTcInstanceRepository struct {
+type EmrHdfsInstanceRepository struct {
 	credential common.CredentialIface
 	client     *sdk.Client
 	logger     log.Logger
 }
 
-func (repo *EmrTcInstanceRepository) GetInstanceKey() string {
+func (repo *EmrHdfsInstanceRepository) GetInstanceKey() string {
 	return "target"
 }
 
-func (repo *EmrTcInstanceRepository) Get(id string) (instance TcInstance, err error) {
+func (repo *EmrHdfsInstanceRepository) Get(id string) (instance TcInstance, err error) {
 	req := sdk.NewDescribeInstancesRequest()
 	req.InstanceIds = []*string{&id}
 	resp, err := repo.client.DescribeInstances(req)
@@ -45,11 +45,11 @@ func (repo *EmrTcInstanceRepository) Get(id string) (instance TcInstance, err er
 	return
 }
 
-func (repo *EmrTcInstanceRepository) ListByIds(id []string) (instances []TcInstance, err error) {
+func (repo *EmrHdfsInstanceRepository) ListByIds(id []string) (instances []TcInstance, err error) {
 	return
 }
 
-func (repo *EmrTcInstanceRepository) ListByFilters(filters map[string]string) (instances []TcInstance, err error) {
+func (repo *EmrHdfsInstanceRepository) ListByFilters(filters map[string]string) (instances []TcInstance, err error) {
 	req := sdk.NewDescribeInstancesRequest()
 	var offset uint64 = 0
 	var limit uint64 = 100
@@ -57,6 +57,8 @@ func (repo *EmrTcInstanceRepository) ListByFilters(filters map[string]string) (i
 
 	req.Offset = &offset
 	req.Limit = &limit
+	strategy := "clusterList"
+	req.DisplayStrategy = &strategy
 
 	if v, ok := filters["ProjectId"]; ok {
 		tv, e := strconv.ParseInt(v, 10, 64)
@@ -93,12 +95,12 @@ getMoreInstances:
 	return
 }
 
-func NewEmrHBaseInstanceRepository(cred common.CredentialIface, c *config.TencentConfig, logger log.Logger) (repo TcInstanceRepository, err error) {
+func NewEmrHdfsInstanceRepository(cred common.CredentialIface, c *config.TencentConfig, logger log.Logger) (repo TcInstanceRepository, err error) {
 	cli, err := client.NewEmrClient(cred, c)
 	if err != nil {
 		return
 	}
-	repo = &EmrTcInstanceRepository{
+	repo = &EmrHdfsInstanceRepository{
 		credential: cred,
 		client:     cli,
 		logger:     logger,

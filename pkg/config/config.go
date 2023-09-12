@@ -26,50 +26,53 @@ const (
 
 var (
 	Product2Namespace = map[string]string{
-		"cmongo":        "QCE/CMONGO",
-		"mongo":         "QCE/CMONGO",
-		"cdb":           "QCE/CDB",
-		"mysql":         "QCE/CDB",
-		"cvm":           "QCE/CVM",
-		"redis":         "QCE/REDIS",
-		"redis_cluster": "QCE/REDIS",
-		"redis_mem":     "QCE/REDIS_MEM",
-		"cluster_redis": "QCE/REDIS",
-		"dc":            "QCE/DC",
-		"dcx":           "QCE/DCX",
-		"lb_public":     "QCE/LB_PUBLIC",
-		"public_clb":    "QCE/LB_PUBLIC",
-		"loadbalance":   "QCE/LOADBALANCE",
-		"7layer_clb":    "QCE/LOADBALANCE",
-		"nat_gateway":   "QCE/NAT_GATEWAY",
-		"nat":           "QCE/NAT_GATEWAY",
-		"cos":           "QCE/COS",
-		"cdn":           "QCE/CDN",
-		"cbs":           "QCE/BLOCK_STORAGE",
-		"sqlserver":     "QCE/SQLSERVER",
-		"mariadb":       "QCE/MARIADB",
-		"ces":           "QCE/CES",
-		"cmq":           "QCE/CMQ",
-		"cmqtopic":      "QCE/CMQTOPIC",
-		"postgres":      "QCE/POSTGRES",
-		"memcached":     "QCE/MEMCACHED",
-		"lighthouse":    "QCE/LIGHTHOUSE",
-		"ckafka":        "QCE/CKAFKA",
-		"tdmysql":       "QCE/TDMYSQL",
-		"lb":            "QCE/LB",            // for eip
-		"tdmq":          "QCE/TDMQ",          // for tdmq
-		"zookeeper":     "TSE/ZOOKEEPER",     // for zookeeper
-		"nacos":         "TSE/NACOS",         // for nacos
-		"vpngw":         "QCE/VPNGW",         // for vpngw
-		"vpnx":          "QCE/VPNX",          // for vpnx
-		"cynosdb_mysql": "QCE/CYNOSDB_MYSQL", // for cynosdb_mysql
-		"dts":           "QCE/DTS",           // for dts
-		"dcg":           "QCE/DCG",           // for dcg
-		"vbc":           "QCE/VBC",           // for vbc
-		"qaap":          "QCE/QAAP",          // for qaap
-		"lb_private":    "QCE/LB_PRIVATE",
-		"waf":           "QCE/WAF",
-		"cfs":           "QCE/CFS",
+		"cmongo":         "QCE/CMONGO",
+		"mongo":          "QCE/CMONGO",
+		"cdb":            "QCE/CDB",
+		"mysql":          "QCE/CDB",
+		"cvm":            "QCE/CVM",
+		"redis":          "QCE/REDIS",
+		"redis_cluster":  "QCE/REDIS",
+		"redis_mem":      "QCE/REDIS_MEM",
+		"cluster_redis":  "QCE/REDIS",
+		"dc":             "QCE/DC",
+		"dcx":            "QCE/DCX",
+		"lb_public":      "QCE/LB_PUBLIC",
+		"public_clb":     "QCE/LB_PUBLIC",
+		"loadbalance":    "QCE/LOADBALANCE",
+		"7layer_clb":     "QCE/LOADBALANCE",
+		"nat_gateway":    "QCE/NAT_GATEWAY",
+		"nat":            "QCE/NAT_GATEWAY",
+		"cos":            "QCE/COS",
+		"cdn":            "QCE/CDN",
+		"cbs":            "QCE/BLOCK_STORAGE",
+		"sqlserver":      "QCE/SQLSERVER",
+		"mariadb":        "QCE/MARIADB",
+		"ces":            "QCE/CES",
+		"cmq":            "QCE/CMQ",
+		"cmqtopic":       "QCE/CMQTOPIC",
+		"postgres":       "QCE/POSTGRES",
+		"memcached":      "QCE/MEMCACHED",
+		"lighthouse":     "QCE/LIGHTHOUSE",
+		"ckafka":         "QCE/CKAFKA",
+		"tdmysql":        "QCE/TDMYSQL",
+		"lb":             "QCE/LB",            // for eip
+		"tdmq":           "QCE/TDMQ",          // for tdmq
+		"zookeeper":      "TSE/ZOOKEEPER",     // for zookeeper
+		"nacos":          "TSE/NACOS",         // for nacos
+		"vpngw":          "QCE/VPNGW",         // for vpngw
+		"vpnx":           "QCE/VPNX",          // for vpnx
+		"cynosdb_mysql":  "QCE/CYNOSDB_MYSQL", // for cynosdb_mysql
+		"dts":            "QCE/DTS",           // for dts
+		"dcg":            "QCE/DCG",           // for dcg
+		"vbc":            "QCE/VBC",           // for vbc
+		"qaap":           "QCE/QAAP",          // for qaap
+		"lb_private":     "QCE/LB_PRIVATE",
+		"waf":            "QCE/WAF",
+		"cfs":            "QCE/CFS",
+		"txmr_hbase":     "QCE/TXMR_HBASE",
+		"txmr_hdfs":      "QCE/TXMR_HDFS",
+		"txmr_starrocks": "QCE/TXMR_STARROCKS",
 	}
 
 	SupportStatisticsTypes = map[string]bool{
