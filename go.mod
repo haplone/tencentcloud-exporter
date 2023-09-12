@@ -16,12 +16,13 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/ckafka v1.0.334
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/clb v1.0.334
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cmq v1.0.334
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.634
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.745
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm v1.0.334
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cynosdb v1.0.413
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dc v1.0.334
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dcdb v1.0.334
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dts v1.0.531
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/emr v1.0.745
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/es v1.0.334
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/gaap v1.0.528
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/lighthouse v1.0.334

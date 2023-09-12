@@ -23,6 +23,7 @@ import (
 	dcdb "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dcdb/v20180411"
 	dts "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dts/v20180330"
 	dtsNew "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dts/v20211206"
+	emr "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/emr/v20190103"
 	es "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/es/v20180416"
 	gaap "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/gaap/v20180529"
 	lh "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/lighthouse/v20200324"
@@ -363,4 +364,14 @@ func NewCfsClient(cred common.CredentialIface, conf *config.TencentConfig) (*cfs
 		cpf.HttpProfile.Endpoint = "cfs.tencentcloudapi.com"
 	}
 	return cfs.NewClient(cred, conf.Credential.Region, cpf)
+}
+
+func NewEmrClient(cred common.CredentialIface, conf *config.TencentConfig) (*emr.Client, error) {
+	cpf := profile.NewClientProfile()
+	if conf.Credential.IsInternal == true {
+		cpf.HttpProfile.Endpoint = "emr.internal.tencentcloudapi.com"
+	} else {
+		cpf.HttpProfile.Endpoint = "emr.tencentcloudapi.com"
+	}
+	return emr.NewClient(cred, conf.Credential.Region, cpf)
 }
