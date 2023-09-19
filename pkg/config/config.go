@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -22,6 +23,8 @@ const (
 	EnvSecretKey   = "TENCENTCLOUD_SECRET_KEY"
 	EnvServiceRole = "TENCENTCLOUD_SERVICE_ROLE"
 	EnvRegion      = "TENCENTCLOUD_REGION"
+
+	ProductCkafka = "CKAFKA"
 )
 
 var (
@@ -113,6 +116,9 @@ type TencentProduct struct {
 	Namespace             string              `yaml:"namespace"`
 	AllMetrics            bool                `yaml:"all_metrics"`
 	AllInstances          bool                `yaml:"all_instances"`
+	KafkaConsumerGroups   []string            `yaml:"kafka_consumer_groups"`
+	HBasterMasters        []string            `yaml:"hbase_masters"`
+	HBaseRegionServers    []string            `yaml:"hbase_region_servers"`
 	ExtraLabels           []string            `yaml:"extra_labels"`
 	OnlyIncludeMetrics    []string            `yaml:"only_include_metrics"`
 	ExcludeMetrics        []string            `yaml:"exclude_metrics"`
@@ -126,6 +132,27 @@ type TencentProduct struct {
 	DelaySeconds          int64               `yaml:"delay_seconds"`
 	MetricNameType        int32               `yaml:"metric_name_type"` // 1=大写转下划线, 2=全小写
 	ReloadIntervalMinutes int64               `yaml:"reload_interval_minutes"`
+}
+
+type KafkaConsumerGroup struct {
+	ConsumerGroupName string
+	InstanceId        string
+	TopicId           string
+	TopicName         string
+}
+
+func NewKafkaConsumerGroup(value string) (*KafkaConsumerGroup, error) {
+	sep := "__"
+	values := strings.Split(value, sep)
+	if len(values) != 4 {
+		return nil, errors.New(fmt.Sprintf("错误的消费组参数，应该是{消费组每次}__{实例ID instanceId}__{topicId}__{topicName},现在收到的是: %s", value))
+	}
+	return &KafkaConsumerGroup{
+		ConsumerGroupName: values[0],
+		InstanceId:        values[1],
+		TopicId:           values[2],
+		TopicName:         values[3],
+	}, nil
 }
 
 type metadataResponse struct {

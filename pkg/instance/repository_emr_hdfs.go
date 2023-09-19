@@ -66,7 +66,7 @@ func (repo *EmrHdfsInstanceRepository) ListByFilters(filters map[string]string) 
 			req.ProjectId = &tv
 		}
 	}
-	if v, ok := filters["InstanceId"]; ok {
+	if v, ok := filters["id4hdfsoverview"]; ok {
 		req.InstanceIds = []*string{&v}
 	}
 

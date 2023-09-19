@@ -9,7 +9,7 @@ import (
 
 const (
 	EmrHdfsNamespace     = "QCE/TXMR_HDFS"
-	EmrHdfsInstanceIDKey = "instanceId"
+	EmrHdfsInstanceIDKey = "id4hdfsoverview"
 )
 
 func init() {

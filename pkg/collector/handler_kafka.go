@@ -3,12 +3,15 @@ package collector
 import (
 	"github.com/go-kit/log"
 	"github.com/tencentyun/tencentcloud-exporter/pkg/common"
+	"github.com/tencentyun/tencentcloud-exporter/pkg/config"
 	"github.com/tencentyun/tencentcloud-exporter/pkg/metric"
+	"strings"
 )
 
 const (
 	KafkaNamespace     = "QCE/CKAFKA"
 	KafkaInstanceIDKey = "instanceId"
+	KafkaConsumerGroup = "consumerGroup"
 )
 
 func init() {
@@ -22,11 +25,15 @@ type kafkaHandler struct {
 func (h *kafkaHandler) GetNamespace() string {
 	return MariaDBNamespace
 }
+
 func (h *kafkaHandler) IsMetricValid(m *metric.TcmMetric) bool {
-	if len(m.Meta.SupportDimensions) != 1 {
+	h.logger.Log("msg", "metric ==", "name", m.Meta.MetricName, "dimensions", strings.Join(m.Meta.SupportDimensions, ","))
+	if len(m.Meta.SupportDimensions) != 1 && len(m.Meta.SupportDimensions) != 4 {
 		return false
 	}
-	if m.Meta.SupportDimensions[0] != KafkaInstanceIDKey {
+	dimensionName := strings.ToLower(m.Meta.SupportDimensions[0])
+	if dimensionName != strings.ToLower(KafkaInstanceIDKey) &&
+		dimensionName != strings.ToLower(KafkaConsumerGroup) {
 		return false
 	}
 	p, err := m.Meta.GetPeriod(m.Conf.StatPeriodSeconds)
@@ -38,14 +45,32 @@ func (h *kafkaHandler) IsMetricValid(m *metric.TcmMetric) bool {
 	}
 	return true
 }
-func NewKafkaHandler(cred common.CredentialIface, c *TcProductCollector, logger log.Logger) (handler ProductHandler, err error) {
-	handler = &kafkaHandler{
+
+func NewKafkaHandler(cred common.CredentialIface, c *TcProductCollector, logger log.Logger) (ProductHandler, error) {
+	handler := &kafkaHandler{
 		baseProductHandler{
 			monitorQueryKey: KafkaInstanceIDKey,
 			collector:       c,
 			logger:          logger,
+			consumerGroups:  make(map[string][]*config.KafkaConsumerGroup),
 		},
 	}
-	return
+
+	for _, value := range c.ProductConf.KafkaConsumerGroups {
+		cg, err := config.NewKafkaConsumerGroup(value)
+		if err != nil {
+			logger.Log("msg", "错误的kafka消费组配置", "err", err.Error())
+		} else {
+			if list, has := handler.consumerGroups[cg.InstanceId]; has {
+				list = append(list, cg)
+				handler.consumerGroups[cg.InstanceId] = list
+			} else {
+				var tl []*config.KafkaConsumerGroup
+				tl = append(tl, cg)
+				handler.consumerGroups[cg.InstanceId] = tl
+			}
+		}
+	}
+	return handler, nil
 
 }

@@ -2,9 +2,11 @@ package collector
 
 import (
 	"fmt"
-
 	"github.com/tencentyun/tencentcloud-exporter/pkg/common"
+	"github.com/tencentyun/tencentcloud-exporter/pkg/config"
+	"github.com/tencentyun/tencentcloud-exporter/pkg/instance"
 	"github.com/tencentyun/tencentcloud-exporter/pkg/util"
+	"strings"
 
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
@@ -40,14 +42,66 @@ type baseProductHandler struct {
 	monitorQueryKey string
 	collector       *TcProductCollector
 	logger          log.Logger
+	consumerGroups  map[string][]*config.KafkaConsumerGroup
+	hMasters        map[string][]string
+	HRegionServers  map[string][]string
 }
 
 func (h *baseProductHandler) IsMetricMetaValid(meta *metric.TcmMeta) bool {
+	//h.logger.Log("msg", "metric --", "name", meta.MetricName, "dimensions", strings.Join(meta.SupportDimensions, ","))
 	return true
 }
 
 func (h *baseProductHandler) ModifyMetricMeta(meta *metric.TcmMeta) error {
 	return nil
+}
+
+func (h *baseProductHandler) AddDimensions(m *metric.TcmMetric, ins instance.TcInstance, query map[string]string) []map[string]string {
+	result := make([]map[string]string, 0)
+	if len(m.Meta.SupportDimensions) == 4 && strings.ToLower(m.Meta.SupportDimensions[0]) == strings.ToLower(KafkaConsumerGroup) {
+		if cgs, has := h.consumerGroups[ins.GetInstanceId()]; has {
+			for _, cg := range cgs {
+				tq := make(map[string]string)
+				for k, v := range query {
+					tq[k] = v
+				}
+				tq[KafkaConsumerGroup] = cg.ConsumerGroupName
+				tq["topicId"] = cg.TopicId
+				tq["topicName"] = cg.TopicName
+				result = append(result, tq)
+			}
+		}
+	}
+	if len(m.Meta.SupportDimensions) == 2 && strings.ToLower(m.Meta.SupportDimensions[0]) == strings.ToLower(EmrHBaseMasterHost) {
+		if hosts, has := h.hMasters[ins.GetInstanceId()]; has {
+			for _, host := range hosts {
+				tq := make(map[string]string)
+				for k, v := range query {
+					tq[k] = v
+				}
+				tq[EmrHBaseMasterHost] = host
+				result = append(result, tq)
+			}
+		}
+	}
+	if len(m.Meta.SupportDimensions) == 2 && strings.ToLower(m.Meta.SupportDimensions[0]) == strings.ToLower(EmrHbaseRegionServerHost) {
+		if hosts, has := h.HRegionServers[ins.GetInstanceId()]; has {
+			for _, host := range hosts {
+				tq := make(map[string]string)
+				for k, v := range query {
+					tq[k] = v
+				}
+				tq[EmrHbaseRegionServerHost] = host
+				tq[EmrHBaseRegionServerID] = tq[EmrHBaseInstanceIDKey]
+				result = append(result, tq)
+			}
+		}
+	}
+
+	if len(result) == 0 {
+		result = append(result, query)
+	}
+	return result
 }
 
 func (h *baseProductHandler) IsMetricValid(m *metric.TcmMetric) bool {
@@ -92,13 +146,16 @@ func (h *baseProductHandler) GetSeriesByOnly(m *metric.TcmMetric) ([]*metric.Tcm
 		ql := map[string]string{
 			h.monitorQueryKey: ins.GetMonitorQueryKey(),
 		}
-		s, err := metric.NewTcmSeries(m, ql, ins)
-		if err != nil {
-			level.Error(h.logger).Log("msg", "Create metric series fail",
-				"metric", m.Meta.MetricName, "instance", insId)
-			continue
+		qls := h.AddDimensions(m, ins, ql)
+		for _, tql := range qls {
+			s, err := metric.NewTcmSeries(m, tql, ins)
+			if err != nil {
+				level.Error(h.logger).Log("msg", "Create metric series fail",
+					"metric", m.Meta.MetricName, "instance", insId)
+				continue
+			}
+			slist = append(slist, s)
 		}
-		slist = append(slist, s)
 	}
 	return slist, nil
 }
@@ -116,13 +173,16 @@ func (h *baseProductHandler) GetSeriesByAll(m *metric.TcmMetric) ([]*metric.TcmS
 		ql := map[string]string{
 			h.monitorQueryKey: ins.GetMonitorQueryKey(),
 		}
-		s, err := metric.NewTcmSeries(m, ql, ins)
-		if err != nil {
-			level.Error(h.logger).Log("msg", "Create metric series fail",
-				"metric", m.Meta.MetricName, "instance", ins.GetInstanceId())
-			continue
+		qls := h.AddDimensions(m, ins, ql)
+		for _, tql := range qls {
+			s, err := metric.NewTcmSeries(m, tql, ins)
+			if err != nil {
+				level.Error(h.logger).Log("msg", "Create metric series fail",
+					"metric", m.Meta.MetricName, "instance", ins.GetInstanceId())
+				continue
+			}
+			slist = append(slist, s)
 		}
-		slist = append(slist, s)
 	}
 	return slist, nil
 }

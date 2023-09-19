@@ -213,7 +213,7 @@ func (repo *TcmMetricRepositoryImpl) listSampleByBatch(
 	response := &v20180724.GetMonitorDataResponse{}
 	response, err = repo.getMonitorDataWithRetry(m.Meta.ProductName, request)
 	if err != nil {
-		level.Error(repo.logger).Log(
+		level.Info(repo.logger).Log(
 			"request start time ", *request.StartTime,
 			"duration ", time.Since(start).Seconds(),
 			"err ", err.Error())

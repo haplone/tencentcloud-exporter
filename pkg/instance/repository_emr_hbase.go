@@ -66,7 +66,7 @@ func (repo *EmrHBaseInstanceRepository) ListByFilters(filters map[string]string)
 			req.ProjectId = &tv
 		}
 	}
-	if v, ok := filters["InstanceId"]; ok {
+	if v, ok := filters["id4hbaseoverview"]; ok {
 		req.InstanceIds = []*string{&v}
 	}
 

@@ -66,7 +66,7 @@ func (repo *EmrStarrocksInstanceRepository) ListByFilters(filters map[string]str
 			req.ProjectId = &tv
 		}
 	}
-	if v, ok := filters["InstanceId"]; ok {
+	if v, ok := filters["id4starrocksstarrocksbroker"]; ok {
 		req.InstanceIds = []*string{&v}
 	}
 
