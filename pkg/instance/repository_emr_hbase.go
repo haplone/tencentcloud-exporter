@@ -54,11 +54,14 @@ func (repo *EmrHBaseInstanceRepository) ListByFilters(filters map[string]string)
 	var offset uint64 = 0
 	var limit uint64 = 100
 	var total int64 = -1
+	// 工单 11431323 核对出EMR一个bug，特殊指定
+	var projectID int64 = -1
 
 	req.Offset = &offset
 	req.Limit = &limit
 	strategy := "clusterList"
 	req.DisplayStrategy = &strategy
+	req.ProjectId = &projectID
 
 	if v, ok := filters["ProjectId"]; ok {
 		tv, e := strconv.ParseInt(v, 10, 64)

@@ -145,7 +145,7 @@ func NewKafkaConsumerGroup(value string) (*KafkaConsumerGroup, error) {
 	sep := "__"
 	values := strings.Split(value, sep)
 	if len(values) != 4 {
-		return nil, errors.New(fmt.Sprintf("错误的消费组参数，应该是{消费组每次}__{实例ID instanceId}__{topicId}__{topicName},现在收到的是: %s", value))
+		return nil, errors.New(fmt.Sprintf("错误的消费组参数，应该是{消费组名称}__{实例ID instanceId}__{topicId}__{topicName},现在收到的是: %s", value))
 	}
 	return &KafkaConsumerGroup{
 		ConsumerGroupName: values[0],
