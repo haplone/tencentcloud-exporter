@@ -119,6 +119,9 @@ type TencentProduct struct {
 	KafkaConsumerGroups   []string            `yaml:"kafka_consumer_groups"`
 	HBasterMasters        []string            `yaml:"hbase_masters"`
 	HBaseRegionServers    []string            `yaml:"hbase_region_servers"`
+	StarrocksBEs          []string            `yaml:"starrocks_bes"`
+	StarrocksFEs          []string            `yaml:"starrocks_fes"`
+	StarrocksBrokers      []string            `yaml:"starrocks_brokers"`
 	ExtraLabels           []string            `yaml:"extra_labels"`
 	OnlyIncludeMetrics    []string            `yaml:"only_include_metrics"`
 	ExcludeMetrics        []string            `yaml:"exclude_metrics"`

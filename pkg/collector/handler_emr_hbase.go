@@ -59,7 +59,7 @@ func NewEmrHBaseHandler(cred common.CredentialIface, c *TcProductCollector, logg
 		},
 	}
 	for _, value := range c.ProductConf.HBasterMasters {
-		id, ip, err := parseIDs(value)
+		id, ip, err := parseHBaseIDs(value)
 		if err != nil {
 			logger.Log("msg", "错误的HBase配置", "err", err.Error())
 		} else {
@@ -74,7 +74,7 @@ func NewEmrHBaseHandler(cred common.CredentialIface, c *TcProductCollector, logg
 		}
 	}
 	for _, value := range c.ProductConf.HBaseRegionServers {
-		id, ip, err := parseIDs(value)
+		id, ip, err := parseHBaseIDs(value)
 		if err != nil {
 			logger.Log("msg", "错误的HBase配置", "err", err.Error())
 		} else {
@@ -91,7 +91,7 @@ func NewEmrHBaseHandler(cred common.CredentialIface, c *TcProductCollector, logg
 	return handler, nil
 }
 
-func parseIDs(value string) (string, string, error) {
+func parseHBaseIDs(value string) (string, string, error) {
 	list := strings.Split(value, "__")
 	if len(list) != 2 {
 		return "", "", errors.New(fmt.Sprintf("错误的HBase参数，应该是{EMR 实例 ID}__{节点 IP},现在收到的是: %s", value))

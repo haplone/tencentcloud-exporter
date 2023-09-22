@@ -39,12 +39,15 @@ func registerHandler(namespace string, _ bool, factory func(common.CredentialIfa
 }
 
 type baseProductHandler struct {
-	monitorQueryKey string
-	collector       *TcProductCollector
-	logger          log.Logger
-	consumerGroups  map[string][]*config.KafkaConsumerGroup
-	hMasters        map[string][]string
-	HRegionServers  map[string][]string
+	monitorQueryKey  string
+	collector        *TcProductCollector
+	logger           log.Logger
+	consumerGroups   map[string][]*config.KafkaConsumerGroup
+	hMasters         map[string][]string
+	HRegionServers   map[string][]string
+	starrocksBrokers map[string][]string
+	starrocksFEs     map[string][]string
+	starrocksBEs     map[string][]string
 }
 
 func (h *baseProductHandler) IsMetricMetaValid(meta *metric.TcmMeta) bool {
@@ -93,6 +96,45 @@ func (h *baseProductHandler) AddDimensions(m *metric.TcmMetric, ins instance.TcI
 				}
 				tq[EmrHbaseRegionServerHost] = host
 				tq[EmrHBaseRegionServerID] = tq[EmrHBaseInstanceIDKey]
+				result = append(result, tq)
+			}
+		}
+	}
+	if len(m.Meta.SupportDimensions) == 2 && strings.ToLower(m.Meta.SupportDimensions[0]) == strings.ToLower(EmrStarrocksBrokerHost) {
+		if hosts, has := h.starrocksBrokers[ins.GetInstanceId()]; has {
+			for _, host := range hosts {
+				tq := make(map[string]string)
+				for k, v := range query {
+					tq[k] = v
+				}
+				tq[EmrStarrocksBrokerHost] = host
+				tq[EmrStarrocksBrokerID] = tq[EmrStarrocksInstanceIDKey]
+				result = append(result, tq)
+			}
+		}
+	}
+	if len(m.Meta.SupportDimensions) == 2 && strings.ToLower(m.Meta.SupportDimensions[0]) == strings.ToLower(EmrStarrocksBeHost) {
+		if hosts, has := h.starrocksBEs[ins.GetInstanceId()]; has {
+			for _, host := range hosts {
+				tq := make(map[string]string)
+				for k, v := range query {
+					tq[k] = v
+				}
+				tq[EmrStarrocksBeHost] = host
+				tq[EmrStarrocksBeID] = tq[EmrStarrocksInstanceIDKey]
+				result = append(result, tq)
+			}
+		}
+	}
+	if len(m.Meta.SupportDimensions) == 2 && strings.ToLower(m.Meta.SupportDimensions[0]) == strings.ToLower(EmrStarrocksFeHost) {
+		if hosts, has := h.starrocksFEs[ins.GetInstanceId()]; has {
+			for _, host := range hosts {
+				tq := make(map[string]string)
+				for k, v := range query {
+					tq[k] = v
+				}
+				tq[EmrStarrocksFeHost] = host
+				tq[EmrStarrocksFeID] = tq[EmrStarrocksInstanceIDKey]
 				result = append(result, tq)
 			}
 		}
